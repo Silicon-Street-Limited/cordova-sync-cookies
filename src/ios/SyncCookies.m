@@ -32,6 +32,7 @@
             }
         }];
 
+     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
     
@@ -46,9 +47,9 @@
          NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 
         // Retrieve all cookies
-        NSArray<NSHTTPCookie *> *cookieStore = [cookieStorage cookies];
+        NSArray<NSHTTPCookie *> *cookies = [cookieStorage cookies];
 
-        [cookieStore getAllCookies:^(NSArray* cookies) {
+  
             NSHTTPCookie* cookie;
             for(cookie in cookies) {
                 NSMutableDictionary* cookieDict = [cookie.properties mutableCopy];
@@ -58,8 +59,10 @@
                 [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:newCookie];
                 
             }
-        }];
-
+       
+ 
+     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
+ 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 

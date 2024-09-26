@@ -1,0 +1,32 @@
+{
+  "name": "cordova-sync-cookies",
+  "version": "0.0.1",
+  "description": "Sync Cookies between different SAP storages",
+  "cordova": {
+    "id": "cordova-sync-cookies",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Silicon-Street-Limited/cordova-sync-cookies.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova",
+    "webview",
+    "wkwebview",
+    "ios"
+  ],
+  "scripts": {
+    "test": "paramedic.."
+  },
+  "author": "Silicon Street Limited",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Silicon-Street-Limited/cordova-sync-cookies/issues"
+  },
+  "homepage": "https://github.com/Silicon-Street-Limited/cordova-sync-cookies"
+}

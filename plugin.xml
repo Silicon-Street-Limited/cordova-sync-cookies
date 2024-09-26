@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-sync-cookies"
+    version="0.0.1">
+
+    <name>cordova-sync-cookies</name>
+    <author> Silicon Street </author>
+	<description>Sync Cookies between IOS Storages</description>
+    <license>MIT</license>
+    <engines>
+        <engine name="cordova-ios" version=">=6.2.0" />
+    </engines>
+    <repo>https://github.com/Silicon-Street-Limited/cordova-sync-cookies.git</repo>
+    <issue>https://github.com/Silicon-Street-Limited/cordova-sync-cookies/issues</issue>
+    <keywords>cordova,webview,wkwebview,ios</keywords>
+
+    <js-module src="www/SyncCookies.js" name="SyncCookies">
+        <clobbers target="SyncCookies"/>
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="SyncCookies">
+                <param name="ios-package" value="SyncCookies" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/SyncCookies.m" />
+    </platform>
+</plugin>

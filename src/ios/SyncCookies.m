@@ -40,6 +40,10 @@
 
 
 - (void) SyncCookiesFromNS:(CDVInvokedUrlCommand*)command {
+
+    @try{
+     self.callbackId = command.callbackId;
+
     CDVPluginResult* pluginResult = nil;
 
     WKWebView* wkWebView = (WKWebView*) self.webView;
@@ -57,10 +61,15 @@
                 [wkWebView.configuration.websiteDataStore.httpCookieStore setCookie:cookie completionHandler:^{NSLog(@"Cookies synced");}];    
             }
        
- 
+         } @catch(NSException *e) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unknown exception"];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+            return;
+        }
+
      pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
  
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId: callbackId:self.callbackId];
 }
 
 

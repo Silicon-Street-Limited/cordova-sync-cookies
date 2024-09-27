@@ -37,14 +37,33 @@
 }
     
 
+- (void)syncCookiesToWKWebView:(WKWebView *)webView completion:(void (^)(void))completion {
+    NSHTTPCookieStorage *httpCookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    WKHTTPCookieStore *wkCookieStore = webView.configuration.websiteDataStore.httpCookieStore;
 
+    NSArray<NSHTTPCookie *> *cookies = httpCookieStorage.cookies;
+    dispatch_group_t group = dispatch_group_create();
+
+    for (NSHTTPCookie *cookie in cookies) {
+        dispatch_group_enter(group);
+        [wkCookieStore setCookie:cookie completionHandler:^{
+            dispatch_group_leave(group);
+        }];
+    }
+
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        if (completion) {
+            completion();
+        }
+    });
+}
 
 - (void) SyncCookiesFromNS:(CDVInvokedUrlCommand*)command {
 
     @try{
      self.callbackId = command.callbackId;
 
-    CDVPluginResult* pluginResult = nil;
+   
 
     WKWebView* wkWebView = (WKWebView*) self.webView;
 
@@ -62,12 +81,12 @@
             }
        
          } @catch(NSException *e) {
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unknown exception"];
+           CDVPluginResult*   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unknown exception"];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
             return;
         }
 
-     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
+  CDVPluginResult*   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
  
     [self.commandDelegate sendPluginResult:pluginResult callbackId: callbackId:self.callbackId];
 }

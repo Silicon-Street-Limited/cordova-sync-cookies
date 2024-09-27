@@ -63,7 +63,7 @@
 }
 
 - (void)SyncCookiesFromNS2:(CDVInvokedUrlCommand*)command {
-    CDVPluginResult* pluginResult = nil;
+    __block CDVPluginResult* pluginResult = nil;
     @try {
         // Ensure self.webView is a WKWebView
         if (![self.webView isKindOfClass:[WKWebView class]]) {

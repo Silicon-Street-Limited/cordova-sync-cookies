@@ -82,18 +82,32 @@
         NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
         NSArray<NSHTTPCookie *> *cookies = [cookieStorage cookies];
 
+        // Create a dispatch group to wait for all cookies to be set
+        dispatch_group_t group = dispatch_group_create();
+
         // Iterate through each cookie and set it in WKHTTPCookieStore
         for (NSHTTPCookie* cookie in cookies) {
             NSMutableDictionary* cookieDict = [cookie.properties mutableCopy];
             [cookieDict removeObjectForKey:NSHTTPCookieDiscard];
             NSHTTPCookie* newCookie = [NSHTTPCookie cookieWithProperties:cookieDict];
-            [cookieStore setCookie:newCookie completionHandler:^{NSLog(@"Cookie synced: %@", newCookie.name);}];
+
+            // Enter the dispatch group
+            dispatch_group_enter(group);
+
+            [cookieStore setCookie:newCookie completionHandler:^{
+                NSLog(@"Cookie synced: %@", newCookie.name);
+                // Leave the dispatch group
+                dispatch_group_leave(group);
+            }];
         }
 
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Cookies moved successfully"];
+        // Wait for all cookies to be set
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Cookies moved successfully"];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        });
     } @catch (NSException *e) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:e.reason];
-    } @finally {
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
 }

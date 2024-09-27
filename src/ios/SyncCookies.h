@@ -6,5 +6,6 @@
 
 - (void)SyncCookiesFromWK:(CDVInvokedUrlCommand*)command;
 - (void)SyncCookiesFromNS:(CDVInvokedUrlCommand*)command;
+- (void)test:(CDVInvokedUrlCommand*)command;
 
 @end

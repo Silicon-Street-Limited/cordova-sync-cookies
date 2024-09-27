@@ -6,6 +6,9 @@ SyncCookiesWK : function (successCallback, errorCallback) {
 
 SyncCookiesNS : function (successCallback, errorCallback) {
     cordova.exec(successCallback, errorCallback, "SyncCookies", "SyncCookiesNS", []);
+},
+test : function (successCallback, errorCallback) {
+    cordova.exec(successCallback, errorCallback, "SyncCookies", "test", []);
 }
 
 }

@@ -40,6 +40,9 @@
 
     @try{
 
+
+   
+
     WKWebView* wkWebView = (WKWebView*) self.webView;
 
          NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -63,7 +66,7 @@
 
   CDVPluginResult*   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
  
-    [self.commandDelegate sendPluginResult:pluginResult callbackId: callbackId:command.callbackId];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 @end

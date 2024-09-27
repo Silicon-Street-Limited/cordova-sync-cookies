@@ -48,16 +48,13 @@
 
         // Retrieve all cookies
         NSArray<NSHTTPCookie *> *cookies = [cookieStorage cookies];
-
   
             NSHTTPCookie* cookie;
             for(cookie in cookies) {
                 NSMutableDictionary* cookieDict = [cookie.properties mutableCopy];
                 [cookieDict removeObjectForKey:NSHTTPCookieDiscard]; // Remove the discard flag. If it is set (even to false), the expires date will NOT be kept.
                 NSHTTPCookie* newCookie = [NSHTTPCookie cookieWithProperties:cookieDict];
-                [wkWebView.configuration.websiteDataStore.httpCookieStore setCookie:cookie completionHandler:^{NSLog(@"Cookies synced");}];
-                [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:newCookie];
-                
+                [wkWebView.configuration.websiteDataStore.httpCookieStore setCookie:cookie completionHandler:^{NSLog(@"Cookies synced");}];    
             }
        
  

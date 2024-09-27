@@ -4,7 +4,7 @@
     id="cordova-sync-cookies"
     version="0.0.1">
 
-    <name>cordova-sync-cookies</name>
+    <name>SyncCookies</name>
     <author> Silicon Street </author>
 	<description>Sync Cookies between IOS Storages</description>
     <license>MIT</license>

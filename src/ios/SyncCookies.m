@@ -37,12 +37,9 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void) SyncCookiesFromNS2:(CDVInvokedUrlCommand*)command {
+- (void) SyncCookiesFromNS:(CDVInvokedUrlCommand*)command {
 
     @try{
-
-
-   
 
     WKWebView* wkWebView = (WKWebView*) self.webView;
 
@@ -69,43 +66,6 @@
  
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
-- (void)SyncCookiesFromNS:(CDVInvokedUrlCommand*)command {
-    @try {
-        WKWebView* wkWebView = (WKWebView*) self.webView;
-        NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 
-        // Retrieve all cookies
-        NSArray<NSHTTPCookie *> *cookies = [cookieStorage cookies];
-        __block NSError *syncError = nil;
-        __block NSInteger remainingCookies = cookies.count;
-
-        for (NSHTTPCookie *cookie in cookies) {
-            NSMutableDictionary *cookieDict = [cookie.properties mutableCopy];
-            [cookieDict removeObjectForKey:NSHTTPCookieDiscard]; // Remove the discard flag. If it is set (even to false), the expires date will NOT be kept.
-            NSHTTPCookie *newCookie = [NSHTTPCookie cookieWithProperties:cookieDict];
-
-            [wkWebView.configuration.websiteDataStore.httpCookieStore setCookie:newCookie completionHandler:^{
-                remainingCookies--;
-                if (![wkWebView.configuration.websiteDataStore.httpCookieStore.cookies containsObject:newCookie]) {
-                    syncError = [NSError errorWithDomain:@"com.example.cookieSync"
-                                                    code:1
-                                                userInfo:@{NSLocalizedDescriptionKey: @"Failed to sync cookie"}];
-                }
-                if (remainingCookies == 0) {
-                    CDVPluginResult *pluginResult = nil;
-                    if (syncError) {
-                        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:syncError.localizedDescription];
-                    } else {
-                        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
-                    }
-                    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-                }
-            }];
-        }
-    } @catch (NSException *e) {
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unknown exception"];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }
-}
 
 @end

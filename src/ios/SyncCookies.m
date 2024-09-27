@@ -2,18 +2,7 @@
 #import <WebKit/WebKit.h>
 #import <objc/runtime.h>
 
-@interface SyncCookies : CDVPlugin {
-    
-}
-
-@property (nonatomic) NSMutableArray* stoppedTasks;
-
-- (void)SyncCookiesFromWK:(CDVInvokedUrlCommand*)command;
-- (void)SyncCookiesFromNS:(CDVInvokedUrlCommand*)command;
-- (void)SyncCookiesFromNS2:(CDVInvokedUrlCommand*)command;
-
-@property (nonatomic, strong) NSString* callbackId;
-@end
+#import "SyncCookies.h"
 
 @implementation SyncCookies
 

@@ -5,7 +5,7 @@ SyncCookiesWK : function (successCallback, errorCallback) {
 },
 
 SyncCookiesNS : function (successCallback, errorCallback) {
-    cordova.exec(successCallback, errorCallback, "SyncCookies", "syncCookiesFromNS", []);
+     cordova.exec(successCallback, errorCallback, "SyncCookies", "syncCookiesFromNS", []);
 },
 
 test : function (successCallback, errorCallback) {

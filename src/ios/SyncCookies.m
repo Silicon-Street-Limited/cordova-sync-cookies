@@ -37,59 +37,34 @@
 }
     
 
-- (void)syncCookiesToWKWebView:(WKWebView *)webView completion:(void (^)(void))completion {
+- (void)syncCookiesFromNS:(CDVInvokedUrlCommand*)command {
     NSHTTPCookieStorage *httpCookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     WKHTTPCookieStore *wkCookieStore = webView.configuration.websiteDataStore.httpCookieStore;
 
     NSArray<NSHTTPCookie *> *cookies = httpCookieStorage.cookies;
-    dispatch_group_t group = dispatch_group_create();
+    __block NSError *syncError = nil;
 
     for (NSHTTPCookie *cookie in cookies) {
-        dispatch_group_enter(group);
-        [wkCookieStore setCookie:cookie completionHandler:^{
-            dispatch_group_leave(group);
+        [wkCookieStore setCookie:cookie completionHandler:^(void) {
+            // Check if the cookie was set successfully
+            if (![wkCookieStore.cookies containsObject:cookie]) {
+                syncError = [NSError errorWithDomain:@"com.example.cookieSync"
+                                                code:1
+                                            userInfo:@{NSLocalizedDescriptionKey: @"Failed to sync cookie"}];
+            }
         }];
     }
 
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        if (completion) {
-            completion();
-        }
-    });
+    // Prepare the result to send back to Cordova
+    CDVPluginResult *pluginResult = nil;
+    if (syncError) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:syncError.localizedDescription];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    }
+
+    // Send the result back to Cordova
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
-
-- (void) SyncCookiesFromNS:(CDVInvokedUrlCommand*)command {
-
-    @try{
-     self.callbackId = command.callbackId;
-
-   
-
-    WKWebView* wkWebView = (WKWebView*) self.webView;
-
-         NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-
-        // Retrieve all cookies
-        NSArray<NSHTTPCookie *> *cookies = [cookieStorage cookies];
-  
-            NSHTTPCookie* cookie;
-            for(cookie in cookies) {
-                NSMutableDictionary* cookieDict = [cookie.properties mutableCopy];
-                [cookieDict removeObjectForKey:NSHTTPCookieDiscard]; // Remove the discard flag. If it is set (even to false), the expires date will NOT be kept.
-                NSHTTPCookie* newCookie = [NSHTTPCookie cookieWithProperties:cookieDict];
-                [wkWebView.configuration.websiteDataStore.httpCookieStore setCookie:cookie completionHandler:^{NSLog(@"Cookies synced");}];    
-            }
-       
-         } @catch(NSException *e) {
-           CDVPluginResult*   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unknown exception"];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-            return;
-        }
-
-  CDVPluginResult*   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Set cookie executed"];
- 
-    [self.commandDelegate sendPluginResult:pluginResult callbackId: callbackId:self.callbackId];
-}
-
 
 @end

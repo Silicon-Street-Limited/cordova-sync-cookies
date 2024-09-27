@@ -34,7 +34,6 @@
                 NSLog(@"Cookie %@ set in WKHTTPCookieStore", newCookie.name);
             }];
         }
-
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Cookies moved successfully"];
     } @catch (NSException *e) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:e.reason];
